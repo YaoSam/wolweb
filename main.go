@@ -19,8 +19,6 @@ var appData AppData
 
 func main() {
 
-	setWorkingDir()
-
 	loadConfig()
 
 	loadData()
