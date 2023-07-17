@@ -63,7 +63,12 @@ func setupWebServer() {
 	}
 
 	// map directory to server static files
-	router.PathPrefix(basePath + "/static/").Handler(http.StripPrefix(basePath+"/static/", http.FileServer(http.Dir("./static"))))
+	thisApp, err := os.Executable()
+	if err != nil {
+		log.Fatalf("Error determining the directory. \"%s\"", err)
+	}
+	appPath := filepath.Dir(thisApp)
+	router.PathPrefix(basePath + "/static/").Handler(http.StripPrefix(basePath+"/static/", http.FileServer(http.Dir(filepath.Join(appPath, "static")))))
 
 	// Define Home Route
 	router.HandleFunc(basePath+"/", renderHomePage).Methods("GET")

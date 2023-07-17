@@ -5,6 +5,8 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 )
 
 func renderHomePage(w http.ResponseWriter, r *http.Request) {
@@ -21,7 +23,12 @@ func renderHomePage(w http.ResponseWriter, r *http.Request) {
 	if appConfig.VDir == "/" {
 		pageData.VDir = ""
 	}
-	tmpl, _ := template.ParseFiles("index.html")
+	thisApp, err := os.Executable()
+	if err != nil {
+		log.Fatalf("Error determining the directory. \"%s\"", err)
+	}
+	appPath := filepath.Dir(thisApp)
+	tmpl, _ := template.ParseFiles(filepath.Join(appPath, "index.html"))
 	tmpl.Execute(w, pageData)
 	log.Println("Renedered the home page.")
 
